@@ -11,7 +11,6 @@ int LED2 = 11;
 int LED3 = 10;
 int mode = 0;
 
-// initialize start time
 unsigned long myTime;
 
 void setup() 
