@@ -42,8 +42,8 @@ void setup()
 void loop() {
   sensorValue = analogRead(sharpIR);
   Serial.println(sensorValue);
-  // LED behavior based on mode
-  dVal = 650 - sensorValue;
+  // LED behavior based on mode. The value of 614 tracks to a 3V reading on the analog pin, or (1024*3V)/5V, a value slightly larger than the maximum on the datasheet
+  dVal = 614 - sensorValue;
   
   switch(mode) {
     case 0: // all on
