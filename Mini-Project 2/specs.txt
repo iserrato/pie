@@ -1,0 +1,11 @@
+Servo Specs
+Torque - 4.3kg
+Speed - 0.17sec/60deg
+Height (with stub) - 41mm
+Width (without flanges) - 40mm
+Height (without stub) - 37mm
+Depth - 20mm
+Width (with flanges) - 55mm
+Height (to base of flange) - 26mm
+Axle OD - 5.75mm
+Axle ID - 1.85mm
