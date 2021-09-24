@@ -33,7 +33,7 @@ import math
 # For Windows computers, the name is formatted like: "COM6"
 # For Apple computers, the name is formatted like: "/dev/tty.usbmodemfa141"
 #
-arduinoComPort = "COM1"
+arduinoComPort = "COM4"
 
 
 #
@@ -52,6 +52,7 @@ serialPort = serial.Serial(arduinoComPort, baudRate, timeout=1)
 
 x_vals = []
 y_vals = []
+z_vals = []
 
 #
 # main loop to read data from the Arduino, then display it
@@ -71,29 +72,34 @@ while True:
     # data was received, convert it into 4 integers
     #
     print("")
-    angle, val = (int(x) for x in lineOfData.split(','))
+    phi, theta, val = (int(x) for x in lineOfData.split(','))
 
     #
     # print the results
     #
 
-    print("angle = " + str(angle), end="")
+    print("phi = " + str(phi), end="")
+    print("theta = " + str(theta), end="")
     print(", val = " + str(val), end="")
 
     distance = -(val - 716.079)/10.4921
-    theta = angle * math.pi/180.0
+    theta_rad = theta * math.pi/180.0
+    phi_rad = phi * math.pi/180.0
 
-    cart_x = distance * math.cos(theta - 90)
-    cart_y = distance * math.sin(theta - 90)
+    cart_x = distance * math.sin(phi_rad - 45) * math.cos(theta_rad - 45)
+    cart_y = distance * math.sin(phi_rad - 45) * math.sin(theta_rad - 45)
+    cart_z = distance * math.cos(phi_rad - 45)
 
     x_vals.append(cart_x)
     y_vals.append(cart_y)
+    z_vals.append(cart_z)
 
-    if len(x_vals) > 180:
+    if len(x_vals) > 1620:
         break
 
-print(x_vals[:10])
-print(y_vals[:10])
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=x_vals, y=y_vals))
+for i in range(10):
+    print("[" , x_vals[i] , "," , y_vals[i] , "," , z_vals[i] , "]")
+
+
+fig = go.Figure(data=go.Contour(z=z_vals, x=x_vals, y=y_vals))
 fig.show()
