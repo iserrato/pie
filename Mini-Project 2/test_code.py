@@ -1,12 +1,16 @@
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 import pandas as pd
-
 import numpy as np
 
-z_data = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
-z = z_data.values
-sh_0, sh_1 = z.shape
-x, y = np.linspace(0, 1, sh_0), np.linspace(0, 1, sh_1)
+df = pd.read_csv('plot_vars.csv', header = None).T
+print(df)
 
-fig = go.Figure(data=go.Contour(z=z[0::5], x=x[0::5], y=y[0::5]))
-fig.show()
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+ax.scatter(df.loc[:,0], df.loc[:,1], df.loc[:,2])
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+
+plt.show()

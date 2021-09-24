@@ -11,6 +11,8 @@ import serial
 import plotly.graph_objects as go
 import pandas as pd
 import math
+import csv
+import numpy as np
 
 #
 # Note 1: This python script was designed to run with Python 3.
@@ -86,20 +88,22 @@ while True:
     theta_rad = theta * math.pi/180.0
     phi_rad = phi * math.pi/180.0
 
-    cart_x = distance * math.sin(phi_rad - 45) * math.cos(theta_rad - 45)
-    cart_y = distance * math.sin(phi_rad - 45) * math.sin(theta_rad - 45)
-    cart_z = distance * math.cos(phi_rad - 45)
+    cart_x = distance * math.sin(phi_rad) * math.cos(theta_rad)
+    cart_y = distance * math.sin(phi_rad) * math.sin(theta_rad)
+    cart_z = distance * math.cos(phi_rad)
 
     x_vals.append(cart_x)
     y_vals.append(cart_y)
     z_vals.append(cart_z)
 
-    if len(x_vals) > 1620:
+    if len(x_vals) > 100:
         break
 
 for i in range(10):
     print("[" , x_vals[i] , "," , y_vals[i] , "," , z_vals[i] , "]")
 
+np.savetxt('plot_vars.csv', [x_vals, y_vals, z_vals], delimiter = ", ", fmt = "% s")
 
-fig = go.Figure(data=go.Contour(z=z_vals, x=x_vals, y=y_vals))
-fig.show()
+
+# fig = go.Figure(data=go.Contour(z=z_vals, x=x_vals, y=y_vals))
+# fig.show()
