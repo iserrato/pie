@@ -4,11 +4,11 @@ Servo theta_servo;  // create servo object to control a servo
 Servo phi_servo;
 // twelve servo objects can be created on most boards
 
-int p_pos = 0;    // variable to store the servo position
-int t_pos = 0;
-int sharpIR = A0;
-int STEPSIZE = 5;
-int avg = 0; 
+int p_pos = 0;    // store the servo phi position
+int t_pos = 0;    // store the servo theta position
+int sharpIR = A5; // pin for IR Sensor
+int STEPSIZE = 5; // increment value for phi and theta position
+int avg = 0;      // 
 int i = 0;
 int stat = -10;
 
@@ -37,10 +37,12 @@ void loop() {
         theta_servo.write(t_pos);
         delay(15);
 
+        // take an average of 1000 data points
         for (i = 0; i <= 1000; i += 1) {
           avg += analogRead(sharpIR);
         }
         avg = avg / 1000;
+        
         Serial.print(p_pos);  Serial.print(",");
         Serial.print(t_pos);  Serial.print(",");
         Serial.println(avg);
@@ -51,11 +53,13 @@ void loop() {
       for (t_pos = 90; t_pos >= 0; t_pos -= STEPSIZE) {
         theta_servo.write(t_pos);
         delay(15);
-        
+
+        // take an average of 1000 data points
         for (i = 0; i <= 1000; i += 1) {
           avg += analogRead(sharpIR);
         }
         avg = avg / 1000;
+        
         Serial.print(p_pos);  Serial.print(",");
         Serial.print(t_pos);  Serial.print(",");
         Serial.println(avg);
