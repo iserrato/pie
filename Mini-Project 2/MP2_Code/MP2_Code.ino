@@ -7,11 +7,13 @@ Servo phi_servo;
 int p_pos = 0;    // store the servo phi position
 int t_pos = 0;    // store the servo theta position
 int sharpIR = A5; // pin for IR Sensor
-int STEPSIZE = 5; // increment value for phi and theta position
-int avg = 0;      // 
+int STEPSIZE = 2; // increment value for phi and theta position
+int avg = 0;      
 int i = 0;
 int stat = -10;
-
+int mod = 4; // defines the modulus for determining values
+int min_ang = 14;
+int max_ang = 74;
 
 void setup() {
   theta_servo.attach(9);  // attaches the servo on pin 9 to the servo object
@@ -27,13 +29,13 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   if (stat == 5) {
-    for (p_pos = 0; p_pos <= 90; p_pos += STEPSIZE) { // goes from 0 degrees to 180 degrees
+    for (p_pos = 20; p_pos <= 40; p_pos += STEPSIZE) { // goes from 20 degrees to 60 degrees
     // in steps of 1 degree
     phi_servo.write(p_pos);              // tell servo to go to position in variable 'pos'
     delay(15);                       // waits 15ms for the servo to reach the position
 
-    if (p_pos % 20 == 0) {
-      for (t_pos = 0; t_pos <= 90; t_pos += STEPSIZE) {
+    if (p_pos % mod == 0) {
+      for (t_pos = min_ang; t_pos <= max_ang; t_pos += STEPSIZE) {
         theta_servo.write(t_pos);
         delay(15);
 
@@ -49,8 +51,8 @@ void loop() {
         avg = 0;
       } 
     } 
-    if (p_pos % 20 == 10) {
-      for (t_pos = 90; t_pos >= 0; t_pos -= STEPSIZE) {
+    if (p_pos % mod != 0) {
+      for (t_pos = max_ang; t_pos >= min_ang; t_pos -= STEPSIZE) {
         theta_servo.write(t_pos);
         delay(15);
 

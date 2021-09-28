@@ -80,9 +80,9 @@ while True:
     # print the results
     #
 
-    print("phi = " + str(phi), end="")
-    print("theta = " + str(theta), end="")
-    print(", val = " + str(val), end="")
+    # print("phi = " + str(phi), end="")
+    # print("theta = " + str(theta), end="")
+    # print(", val = " + str(val), end="")
 
     distance = -(val - 716.079)/10.4921
     theta_rad = theta * math.pi/180.0
@@ -96,7 +96,7 @@ while True:
     y_vals.append(cart_y)
     z_vals.append(cart_z)
 
-    if len(x_vals) > 100:
+    if len(x_vals) > 600:
         break
 
 for i in range(10):
