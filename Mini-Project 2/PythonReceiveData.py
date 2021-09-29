@@ -55,7 +55,10 @@ serialPort = serial.Serial(arduinoComPort, baudRate, timeout=1)
 x_vals = []
 y_vals = []
 z_vals = []
-
+d_array = []
+phi_array = []
+theta_array = []
+pt_set = set()
 #
 # main loop to read data from the Arduino, then display it
 #
@@ -70,40 +73,45 @@ while True:
   # check if data was received
   #
   if len(lineOfData) > 0:
+
     #
     # data was received, convert it into 4 integers
     #
     print("")
-    phi, theta, val = (int(x) for x in lineOfData.split(','))
+    theta, phi, val = (int(x) for x in lineOfData.split(','))
 
     #
     # print the results
     #
 
-    # print("phi = " + str(phi), end="")
-    # print("theta = " + str(theta), end="")
-    # print(", val = " + str(val), end="")
+    print("phi = " + str(phi), end="")
+    print("theta = " + str(theta), end="")
+    print(", val = " + str(val), end="")
 
-    distance = -(val - 716.079)/10.4921
+
+    if (phi, theta) in pt_set:
+        break
+    pt_set.add((phi, theta))
+
+    # distance = -(math.log(val/843.2))/.02313 #an exponential model
+    distance = -((100000*math.log((5*val)/(4216)))/(2313)) #alternate exponential model
     theta_rad = theta * math.pi/180.0
     phi_rad = phi * math.pi/180.0
 
     cart_x = distance * math.sin(phi_rad) * math.cos(theta_rad)
-    cart_y = distance * math.sin(phi_rad) * math.sin(theta_rad)
+    cart_y = distance * math.sin(theta_rad) * math.sin(phi_rad)
     cart_z = distance * math.cos(phi_rad)
 
     x_vals.append(cart_x)
     y_vals.append(cart_y)
     z_vals.append(cart_z)
-
-    if len(x_vals) > 600:
-        break
+    d_array.append(distance)
+    phi_array.append(phi_rad)
+    theta_array.append(theta_rad)
 
 for i in range(10):
     print("[" , x_vals[i] , "," , y_vals[i] , "," , z_vals[i] , "]")
 
-np.savetxt('plot_vars.csv', [x_vals, y_vals, z_vals], delimiter = ", ", fmt = "% s")
-
-
+np.savetxt('plot_vars.csv', [x_vals, y_vals, z_vals, d_array, phi_array, theta_array], delimiter = ", ", fmt = "% s")
 # fig = go.Figure(data=go.Contour(z=z_vals, x=x_vals, y=y_vals))
 # fig.show()
