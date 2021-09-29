@@ -1,7 +1,7 @@
 import serial
-import plotly.graph_objects as go
 import pandas as pd
 import math
+import numpy as np
 
 #
 # Note 1: This python script was designed to run with Python 3.
@@ -43,6 +43,7 @@ serialPort = serial.Serial(arduinoComPort, baudRate, timeout=1)
 
 x_vals = []
 y_vals = []
+pt_set = set()
 
 #
 # main loop to read data from the Arduino, then display it
@@ -71,6 +72,10 @@ while True:
     print("angle = " + str(angle), end="")
     print(", val = " + str(val), end="")
 
+    if angle in pt_set:
+        break
+    pt_set.add(angle)
+
     distance = -(val - 716.079)/10.4921
     theta = angle * math.pi/180.0
 
@@ -80,11 +85,8 @@ while True:
     x_vals.append(cart_x)
     y_vals.append(cart_y)
 
-    if len(x_vals) > 180:
-        break
 
 print(x_vals[:10])
 print(y_vals[:10])
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=x_vals, y=y_vals))
-fig.show()
+
+np.savetxt('simgle_scan.csv', [x_vals, y_vals], delimiter = ", ", fmt = "% s")
