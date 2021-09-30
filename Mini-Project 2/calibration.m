@@ -15,11 +15,23 @@ test_ans = [540 484 422];
 
 f = fit(cm', val','exp1');
 
-plot(f, cm, val, '.');
-axis([15 75 150 600])
+% plot(f, cm, val, '.');
+% axis([15 75 150 600])
+% grid('on');
+% title('Calibration Data with Fitted Line')
+% legend('Experiemental Readings', 'Fitted Curve')
+% xlabel('Distance (cm)')
+% ylabel('IR Sensor Value')
+
+
+plot([20 25 30]', [540 484 422]', 'go');
+hold on;
+plot(test_cms, 843.2 .*exp(test_cms .* -0.02313), 'bx');
+plot(f);
+hold off;
 grid('on');
-title('Calibration Data with Fitted Line')
-legend('Experiemental Readings', 'Fitted Curve')
+axis([15 35 400 580])
+legend('Experiemental Readings', 'Theoretical Value', 'Fit line');
 xlabel('Distance (cm)')
 ylabel('IR Sensor Value')
-
+title('Theoretical and Experiemntal Distance Readings')
