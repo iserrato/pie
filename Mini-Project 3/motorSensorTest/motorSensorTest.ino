@@ -1,7 +1,7 @@
 #include <Adafruit_MotorShield.h>
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(3);
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(3);
 int leftSensor = A0;
 long sum = 0;
 int sampleSize = 1000;
@@ -15,8 +15,10 @@ void setup() {
 }
 
 void loop() {
-//  rightMotor->setSpeed(150);
-//  rightMotor->run(FORWARD);
+  rightMotor->setSpeed(0);
+  rightMotor->run(FORWARD);
+  leftMotor->setSpeed(0);
+  leftMotor->run(FORWARD);
   for (int i = 0; i < sampleSize; i++){
     sum = sum + analogRead(leftSensor);
   }
