@@ -7,16 +7,16 @@ int rightSensor = A1;
 
 String input = "";
 
-int sensorSampleSize = 1; //100;
+int sensorSampleSize = 100;
 long sampleSumLeft = 0;
 long sampleSumRight = 0;
 
 float sensorDifference = 0;
 int sensorDifferenceCutoff = 50;
 
-float errorMultiplier = .025;
+float errorMultiplier = .3;
 float motorDefaultSpeed = 50; // do not change! use speed scale
-float speedScale = 1.5;
+float speedScale = .5;
 
 float leftSpeed = 0;
 float rightSpeed = 0;
@@ -54,17 +54,17 @@ void loop() {
     else {
       Serial.println("Invalid Input");
     }
-//    Serial.print("got: ");
-//    Serial.println(sampleSumLeft);
+    Serial.print("got: ");
+    Serial.println(input);
   }
     
   //take an average of sensor readings
-//  sampleSumLeft = 800;
-//  sampleSumRight = 1200;
-//  for (int i = 0; i < sensorSampleSize; i++){
-//    sampleSumLeft = sampleSumLeft + analogRead(leftSensor);
-//    sampleSumRight = sampleSumRight + analogRead(rightSensor);
-//  }
+  sampleSumLeft = 800;
+  sampleSumRight = 1200;
+  for (int i = 0; i < sensorSampleSize; i++){
+    sampleSumLeft = sampleSumLeft + analogRead(leftSensor);
+    sampleSumRight = sampleSumRight + analogRead(rightSensor);
+  }
 
   //find difference between sensors (left - right)
   //0 if straight, positive if needs to turn left, negative if needs to turn right
@@ -86,22 +86,17 @@ void loop() {
   
   rightMotor->setSpeed(rightSpeed);
   leftMotor->setSpeed(leftSpeed);
-  Serial.print("rightSpeed ");
-  Serial.println(rightSpeed);
-  Serial.print("leftSpeed ");
-  Serial.println(leftSpeed);
-//  Serial.print("sensor diff ");
-//  Serial.println(sensorDifference*errorMultiplier);
+//  Serial.print("rightSpeed ");
+//  Serial.println(rightSpeed);
+//  Serial.print("leftSpeed ");
+//  Serial.println(leftSpeed);
+//  Serial.print("sensor left: ");
+//  Serial.println(analogRead(leftSensor));
+//   Serial.print("sensor right: ");
+//  Serial.println(analogRead(rightSensor));
   //set motors
   rightMotor->run(FORWARD);
   leftMotor->run(FORWARD);
-
-  delay(loopDelay);
-
-
-  rightMotor->run(RELEASE);
-  leftMotor->run(RELEASE);
-  delay(loopDelay);
 
   
 }
