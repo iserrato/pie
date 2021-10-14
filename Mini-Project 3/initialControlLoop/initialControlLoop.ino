@@ -7,24 +7,24 @@ int rightSensor = A1;
 
 String input = "";
 
+// sensor data collection constants
 int sensorSampleSize = 100;
-long sampleSumLeft = 0;
-long sampleSumRight = 0;
+long sensorSumLeft = 0;
+long sensorSumRight = 0;
 
 float sensorDifference = 0;
 int sensorDifferenceCutoff = 50;
 
+// motor speed constants
 float errorMultiplier = .3;
-float motorDefaultSpeed = 50; // do not change! use speed scale
+float motorDefaultSpeed = 50; 
 float speedScale = .5;
 
 float leftSpeed = 0;
 float rightSpeed = 0;
 
-int loopDelay = 100;
-
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   //check coms with motor shield
   if (!AFMS.begin()) {   
     Serial.println("Failed to find motor shield");
@@ -33,42 +33,36 @@ void setup() {
 }
 
 void loop() {
-
+  // get serial input to change parameters
   if(Serial.available()){
     input = Serial.readStringUntil('\n');
-    if (input[0] == 'l') {
-      sampleSumLeft = (input.substring(1)).toInt();
-    }
-    else if (input[0] == 'r') {
-      sampleSumRight = (input.substring(1)).toInt();
-    }
-    else if (input[0] == 'p') {
+    // modify turn speed
+    if (input[0] == 'p') {
       errorMultiplier = (input.substring(1)).toFloat();
     }
+    // modify turn speed
     else if (input[0] == 's'){
       speedScale = (input.substring(1)).toFloat();
-    }
-     else if (input[0] == 't'){
-      loopDelay = (input.substring(1)).toInt();
     }
     else {
       Serial.println("Invalid Input");
     }
+    // output value for record
     Serial.print("got: ");
     Serial.println(input);
   }
     
   //take an average of sensor readings
-  sampleSumLeft = 800;
-  sampleSumRight = 1200;
+  sensorSumLeft = 800;
+  sensorSumRight = 1200;
   for (int i = 0; i < sensorSampleSize; i++){
-    sampleSumLeft = sampleSumLeft + analogRead(leftSensor);
-    sampleSumRight = sampleSumRight + analogRead(rightSensor);
+    sensorSumLeft = sensorSumLeft + analogRead(leftSensor);
+    sensorSumRight = sensorSumRight + analogRead(rightSensor);
   }
 
-  //find difference between sensors (left - right)
+  //find difference between sensor averages (left - right)
   //0 if straight, positive if needs to turn left, negative if needs to turn right
-  sensorDifference = (sampleSumLeft/sensorSampleSize) - (sampleSumRight/sensorSampleSize);
+  sensorDifference = (sensorSumLeft/sensorSampleSize) - (sensorSumRight/sensorSampleSize);
   //ignore slight difference in readings
   if (abs(sensorDifference) < sensorDifferenceCutoff){
     sensorDifference = 0;
@@ -83,20 +77,16 @@ void loop() {
   leftSpeed = ((leftSpeed < 255) ? leftSpeed : 255);
   rightSpeed = ((rightSpeed > 0) ? rightSpeed : 0);
   leftSpeed = ((leftSpeed > 0) ? leftSpeed : 0);
-  
+
+  Serial.println(sensorSumLeft/sensorSampleSize);
+  Serial.println(sensorSumRight/sensorSampleSize);
+  Serial.println(leftSpeed);
+  Serial.println(rightSpeed);
+
+  //set motors
   rightMotor->setSpeed(rightSpeed);
   leftMotor->setSpeed(leftSpeed);
-//  Serial.print("rightSpeed ");
-//  Serial.println(rightSpeed);
-//  Serial.print("leftSpeed ");
-//  Serial.println(leftSpeed);
-//  Serial.print("sensor left: ");
-//  Serial.println(analogRead(leftSensor));
-//   Serial.print("sensor right: ");
-//  Serial.println(analogRead(rightSensor));
-  //set motors
   rightMotor->run(FORWARD);
   leftMotor->run(FORWARD);
-
   
 }
