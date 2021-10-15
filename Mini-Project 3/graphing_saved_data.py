@@ -30,5 +30,8 @@ plt.plot(t, float_left_motor)
 plt.plot(t, float_right_motor)
 
 plt.legend(["left sensor", "right sensor", "left motor", "right motor"])
+plt.title("Motor and Sensor Values")
+plt.xlabel("Data Points")
+plt.ylabel("Motor Speeds and Sensor Values")
 
 plt.show()

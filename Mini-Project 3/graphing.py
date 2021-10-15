@@ -68,11 +68,17 @@ for i in range(t_len):
 
 t = [i for i in range(len(left_sensor))]
 plt.plot(t, left_sensor)
+plt.plot(t, right_sensor)
 plt.plot(t, left_motor)
 plt.plot(t, right_motor)
-plt.plot(t, right_sensor)
 
 
+plt.legend(["left sensor", "right sensor", "left motor", "right motor"])
+plt.title("Motor and Sensor Values")
+plt.xlabel("Data Points")
+plt.ylabel("Motor Speeds and Sensor Values")
+
+plt.show()
 
 with open('data_out.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -81,4 +87,3 @@ with open('data_out.csv', 'w', newline='') as csvfile:
     writer.writerow(left_motor)
     writer.writerow(right_motor)
 
-plt.show()
